@@ -13,13 +13,6 @@ func newRouter() *router {
 	return &router{handlers: make(map[string]HandlerFunc)}
 }
 
-/*
-func (engine *Engine) addRoute(httpMethod string, pattern string, handler HandlerFunc) {
-	key := httpMethod + "-" + pattern
-	engine.router[key] = handler
-}
-*/
-
 func (r *router) addRoute(method string, pattern string, handler HandlerFunc) {
 	log.Printf("Route %4s - %s", method, pattern)
 	key := method + "-" + pattern
