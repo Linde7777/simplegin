@@ -20,14 +20,14 @@ func New() *Engine {
 }
 
 func (engine *Engine) addRoute(method string, pattern string, handler HandlerFunc) {
-	engine.addRoute(method, pattern, handler)
+	engine.router.addRoute(method, pattern, handler)
 }
 
-func (engine *Engine) Get(pattern string, handler HandlerFunc) {
+func (engine *Engine) GET(pattern string, handler HandlerFunc) {
 	engine.addRoute("GET", pattern, handler)
 }
 
-func (engine *Engine) Post(pattern string, handler HandlerFunc) {
+func (engine *Engine) POST(pattern string, handler HandlerFunc) {
 	engine.addRoute("POST", pattern, handler)
 }
 
