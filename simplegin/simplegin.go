@@ -2,6 +2,7 @@ package simplegin
 
 import (
 	"net/http"
+	"strings"
 )
 
 type HandlerFunc func(*Context)
@@ -12,8 +13,19 @@ type Engine struct {
 	groups []*RouterGroup
 }
 
+func (group *RouterGroup) Use(middlewares ...HandlerFunc) {
+	group.middlewares = append(group.middlewares, middlewares...)
+}
+
 func (engine *Engine) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+	var middlewares []HandlerFunc
+	for _, group := range engine.groups {
+		if strings.HasPrefix(req.URL.Path, group.prefix) {
+			middlewares = append(middlewares, group.middlewares...)
+		}
+	}
 	c := newContext(w, req)
+	c.handlers = middlewares
 	engine.router.handle(c)
 }
 
@@ -42,7 +54,7 @@ func (engine *Engine) Run(addr string) (err error) {
 
 type RouterGroup struct {
 	prefix      string
-	parent      *RouterGroup // sub router group
+	parent      *RouterGroup
 	middlewares []HandlerFunc
 	engine      *Engine
 }
