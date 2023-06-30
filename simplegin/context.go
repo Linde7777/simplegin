@@ -15,6 +15,20 @@ type Context struct {
 	Method     string
 	Params     map[string]string
 	StatusCode int
+
+	// middlewares
+	handlers []HandlerFunc
+	index    int
+}
+
+// Next postpone current middleware function, executing
+// other middleware function or handler function
+func (c *Context) Next() {
+	c.index += 1
+	s := len(c.handlers)
+	for ; c.index < s; c.index++ {
+		c.handlers[c.index](c)
+	}
 }
 
 func (c *Context) Param(key string) string {
